@@ -1,6 +1,21 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import {
   buildGeneratorPrompt,
 } from '../generator/generator-prompt';
+
+import {
+  materializeManifest,
+} from '../generator/manifest/manifest-materializer';
+
+import {
+  parseGenerationManifest,
+} from '../generator/manifest/manifest-parser';
+
+import {
+  validateGenerationManifest,
+} from '../generator/manifest/manifest-validator';
 
 import type {
   GeneratorProvider,
@@ -13,7 +28,7 @@ import {
 } from './process/process-runner';
 
 const GENERATOR_TIMEOUT_MS =
-  180_000;
+  120_000;
 
 export class CopilotGeneratorProvider
 implements GeneratorProvider {
@@ -36,27 +51,13 @@ implements GeneratorProvider {
         [
           '--prompt',
           prompt,
-
           '--silent',
-
           '--no-ask-user',
-
-          /*
-           * Generator runs with the sandbox as cwd.
-           *
-           * It may edit files there, but it receives
-           * no shell or browser permission.
-           */
           '--available-tools',
-          'write',
-
-          '--allow-tool',
-          'write',
         ],
         {
           cwd:
             request.sandboxRoot,
-
           timeoutMs:
             GENERATOR_TIMEOUT_MS,
         },
@@ -71,9 +72,7 @@ implements GeneratorProvider {
       );
     }
 
-    if (
-      result.exitCode !== 0
-    ) {
+    if (result.exitCode !== 0) {
       throw new Error(
         [
           'Copilot generator failed.',
@@ -83,6 +82,44 @@ implements GeneratorProvider {
           .join('\n'),
       );
     }
+
+    const raw =
+      result.stdout.trim();
+
+    const diagnosticPath =
+      `${request.sandboxRoot}.generator.raw.txt`;
+
+    fs.writeFileSync(
+      diagnosticPath,
+      raw + '\n',
+      'utf-8',
+    );
+
+    const manifest =
+      parseGenerationManifest(
+        raw,
+      );
+
+    const validation =
+      validateGenerationManifest(
+        manifest,
+        request.approvedPlan,
+      );
+
+    if (!validation.valid) {
+      throw new Error(
+        [
+          'Generation manifest rejected.',
+          ...validation.errors,
+          `Raw output: ${diagnosticPath}`,
+        ].join('\n'),
+      );
+    }
+
+    materializeManifest(
+      manifest,
+      request.sandboxRoot,
+    );
 
     return {
       provider:

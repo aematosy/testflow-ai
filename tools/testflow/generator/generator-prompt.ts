@@ -13,26 +13,35 @@ export function buildGeneratorPrompt(
   return `
 You are the TestFlow implementation generator.
 
-The architecture has already been decided and approved.
+You DO NOT have filesystem access.
 
-DO NOT redesign it.
+Return exactly ONE JSON object.
+No markdown.
+No code fences.
+No commentary.
 
-You may create or modify ONLY artifacts explicitly authorized
-by the approved plan.
+Required shape:
 
-You MUST NOT:
+{
+  "version": "1.0",
+  "recordingId": "${approvedPlan.proposal.recordingId}",
+  "files": [
+    {
+      "operation": "CREATE or MODIFY",
+      "path": "exact approved path",
+      "content": "complete TypeScript file content"
+    }
+  ]
+}
 
-- delete files
-- rename files
-- delete existing methods
-- delete existing locators
-- replace existing files wholesale
-- create unapproved files
-- modify REUSE artifacts
-- change architecture
-- embed passwords or secrets
-- add hard waits
-- put raw selectors in tests or flows
+Generate exactly every CREATE and MODIFY artifact from the approved
+plan.
+
+Do NOT return REUSE artifacts.
+
+Do NOT invent files.
+
+Do NOT change approved paths.
 
 Architecture:
 
@@ -42,38 +51,28 @@ Test
   -> Locator
   -> Playwright
 
-Locators MUST live separately from Pages and Components.
+Rules:
 
-Flows orchestrate only.
-
-Pages represent page behavior.
-
-Components represent reusable UI.
-
-Tests express scenario intent.
-
-Use the Recorder Playwright semantic locator evidence when available.
-
-Prefer:
-1. role + accessible name
-2. label
-3. test id
-4. stable semantic attributes
-5. deterministic fallback
-
-The sensitive password has no exported value.
-Use environment/runtime configuration.
+- locators remain separate from Pages and Components
+- Flow only orchestrates
+- no raw selectors in tests or flows
+- no hard waits
+- no passwords or secrets
+- use runtime/environment credentials for sensitive data
+- use Recorder Playwright semantic locator evidence
+- preserve existing code for MODIFY
+- implement complete compilable TypeScript files
+- use @playwright/test
+- do not redesign the approved architecture
 
 === APPROVED PLAN ===
 
 ${JSON.stringify(approvedPlan.proposal, null, 2)}
 
-=== CANONICAL RECORDING ===
+=== CANONICAL MODEL ===
 
 ${JSON.stringify(model, null, 2)}
 
-Implement ONLY the approved plan in the current sandbox.
-
-Do not touch anything outside the authorized paths.
+Return ONLY the GenerationManifest JSON.
 `.trim();
 }
