@@ -17,6 +17,10 @@ import {
   validateGenerationManifest,
 } from '../generator/manifest/manifest-validator';
 
+import {
+  validateGenerationPolicy,
+} from '../generator/generation-policy-validator';
+
 import type {
   GeneratorProvider,
   GeneratorRequest,
@@ -111,6 +115,25 @@ implements GeneratorProvider {
         [
           'Generation manifest rejected.',
           ...validation.errors,
+          `Raw output: ${diagnosticPath}`,
+        ].join('\n'),
+      );
+    }
+
+    const policyValidation =
+      validateGenerationPolicy(
+        manifest,
+        request.model,
+      );
+
+    if (!policyValidation.valid) {
+      throw new Error(
+        [
+          'Generation policy rejected candidate.',
+          ...policyValidation.errors.map(
+            (issue) =>
+              `${issue.file}: ${issue.message}`,
+          ),
           `Raw output: ${diagnosticPath}`,
         ].join('\n'),
       );

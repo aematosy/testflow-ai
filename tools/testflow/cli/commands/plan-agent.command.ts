@@ -25,6 +25,10 @@ import {
   CopilotPlannerProvider,
 } from '../../providers/copilot-planner.provider';
 
+import {
+  normalizeArchitectureProposal,
+} from '../../naming/proposal-normalizer';
+
 function readJson<T>(
   filePath: string,
 ): T {
@@ -149,9 +153,31 @@ export async function runPlanAgent(
         outputPath,
       });
 
+    const normalizedProposal =
+      normalizeArchitectureProposal(
+        result.proposal,
+      );
+
+    /*
+     * The LLM decides ownership and architecture.
+     * TestFlow decides repository naming conventions.
+     */
+    result.proposal =
+      normalizedProposal;
+
+    fs.writeFileSync(
+      outputPath,
+      JSON.stringify(
+        normalizedProposal,
+        null,
+        2,
+      ) + '\n',
+      'utf-8',
+    );
+
     const validation =
       validateArchitectureProposal(
-        result.proposal,
+        normalizedProposal,
         repository,
       );
 

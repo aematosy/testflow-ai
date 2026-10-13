@@ -6,6 +6,10 @@ import type {
   CanonicalTestFlow,
 } from '../model/canonical-model';
 
+import {
+  GENERATION_POLICY,
+} from '../policy/generation-policy';
+
 export function buildGeneratorPrompt(
   approvedPlan: ApprovedPlan,
   model: CanonicalTestFlow,
@@ -64,6 +68,19 @@ Rules:
 - implement complete compilable TypeScript files
 - use @playwright/test
 - do not redesign the approved architecture
+
+=== GENERATION POLICY ===
+
+${JSON.stringify(GENERATION_POLICY, null, 2)}
+
+IMPORTANT:
+
+- Do not embed recorded form values directly in spec files.
+- Non-sensitive scenario data must be supplied through a test-data object,
+  fixture, factory, or runtime input.
+- Sensitive values must come from runtime configuration/environment.
+- Do not embed the application origin in generated Page classes.
+- Use Playwright baseURL and relative navigation.
 
 === APPROVED PLAN ===
 

@@ -2,13 +2,32 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const COPY_ENTRIES = [
-  'src',
-  'tests',
-  'playwright.config.ts',
-  'tsconfig.json',
-  'package.json',
-];
+function copyIfExists(
+  root: string,
+  sandbox: string,
+  relativePath: string,
+): void {
+  const source =
+    path.join(
+      root,
+      relativePath,
+    );
+
+  if (!fs.existsSync(source)) {
+    return;
+  }
+
+  fs.cpSync(
+    source,
+    path.join(
+      sandbox,
+      relativePath,
+    ),
+    {
+      recursive: true,
+    },
+  );
+}
 
 export function createGeneratorSandbox(
   root: string = process.cwd(),
@@ -21,32 +40,42 @@ export function createGeneratorSandbox(
       ),
     );
 
-  for (
-    const entry of COPY_ENTRIES
-  ) {
-    const source =
-      path.join(
-        root,
-        entry,
-      );
+  /*
+   * Copy only runtime automation artifacts.
+   *
+   * TestFlow's own unit/smoke tests are framework
+   * validation and must not become part of the
+   * generated application sandbox.
+   */
+  copyIfExists(
+    root,
+    sandbox,
+    'src',
+  );
 
-    if (
-      !fs.existsSync(source)
-    ) {
-      continue;
-    }
+  copyIfExists(
+    root,
+    sandbox,
+    'tests/e2e',
+  );
 
-    fs.cpSync(
-      source,
-      path.join(
-        sandbox,
-        entry,
-      ),
-      {
-        recursive: true,
-      },
-    );
-  }
+  copyIfExists(
+    root,
+    sandbox,
+    'playwright.config.ts',
+  );
+
+  copyIfExists(
+    root,
+    sandbox,
+    'tsconfig.json',
+  );
+
+  copyIfExists(
+    root,
+    sandbox,
+    'package.json',
+  );
 
   return sandbox;
 }

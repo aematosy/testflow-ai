@@ -119,7 +119,7 @@ export function validateGeneratedPatch(
     ),
     ...collectFiles(
       repositoryRoot,
-      'tests',
+      'tests/e2e',
     ),
   ];
 
