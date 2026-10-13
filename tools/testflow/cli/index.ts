@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { runApply } from './commands/apply.command';
 import { runApprove } from './commands/approve.command';
 import { runDoctor } from './commands/doctor.command';
 import { runGeneratePreview } from './commands/generate-preview.command';
@@ -62,6 +63,14 @@ async function main(): Promise<void> {
   if (command === 'approve') {
     process.exitCode = runApprove(
       process.argv[3],
+    );
+    return;
+  }
+
+  if (command === 'apply') {
+    process.exitCode = runApply(
+      process.argv[3],
+      process.argv[4],
     );
     return;
   }
