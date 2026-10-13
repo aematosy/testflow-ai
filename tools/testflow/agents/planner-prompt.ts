@@ -14,6 +14,18 @@ export function buildPlannerPrompt(
       'utf-8',
     );
 
+  const repositoryIntelligenceSkill =
+    fs.readFileSync(
+      '.github/skills/testflow-repository-intelligence/SKILL.md',
+      'utf-8',
+    );
+
+  const targetIdentityReference =
+    fs.readFileSync(
+      '.github/skills/testflow-repository-intelligence/references/target-identity.md',
+      'utf-8',
+    );
+
   const recordingId =
     `TF-${context.recording.recording.sessionId}`;
 
@@ -134,6 +146,14 @@ Existing repository artifacts are protected.
 === ARCHITECTURE RULES ===
 
 ${instructions}
+
+=== REPOSITORY INTELLIGENCE SKILL ===
+
+${repositoryIntelligenceSkill}
+
+=== TARGET IDENTITY REFERENCE ===
+
+${targetIdentityReference}
 
 === TESTFLOW CONTEXT ===
 
