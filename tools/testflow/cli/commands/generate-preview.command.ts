@@ -130,6 +130,9 @@ export async function runGeneratePreview(
       '\nGenerating candidate implementation...',
     );
 
+    const generationStartedAt =
+      Date.now();
+
     await provider.generate({
       approvedPlan:
         approved,
@@ -137,6 +140,17 @@ export async function runGeneratePreview(
       sandboxRoot:
         sandbox,
     });
+
+    const generationDurationMs =
+      Date.now() -
+      generationStartedAt;
+
+    console.log(
+      `Generation time    ${(
+        generationDurationMs /
+        1000
+      ).toFixed(1)}s`,
+    );
 
     const patch =
       validateGeneratedPatch(
