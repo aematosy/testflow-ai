@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "recordingId": "TF-TEST",
+  "repositoryIndexVersion": "1.0",
+  "generatedBy": "manual",
+  "artifacts": [
+    {
+      "change": "CREATE",
+      "type": "locator",
+      "name": "LoginLocators",
+      "path": "src/locators/login.locators.ts",
+      "owns": [
+        "USERNAME",
+        "PASSWORD",
+        "LOGIN"
+      ],
+      "reason": "No existing repository owner.",
+      "confidence": 1
+    }
+  ],
+  "forbiddenOperations": [
+    "DELETE_EXISTING_FILE",
+    "DELETE_EXISTING_METHOD",
+    "DELETE_EXISTING_LOCATOR",
+    "RENAME_EXISTING_API",
+    "REPLACE_EXISTING_FILE"
+  ]
+}
