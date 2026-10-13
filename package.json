@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "soap": "^1.9.3"
+  },
+  "name": "amatosya",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^26.6.5",
+    "ts-morph": "^28.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "testflow": "tsx tools/testflow/cli/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test:smoke": "playwright test tests/smoke/framework.spec.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

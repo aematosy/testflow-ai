@@ -1,0 +1,28 @@
+node_modules/
+playwright-report/
+test-results/
+blob-report/
+.env
+.env.*
+!.env.example
+
+.testflow/evidence/
+.testflow/healing/
+
+.DS_Store
+
+# TestFlow runtime artifacts
+.testflow/recordings/*
+.testflow/models/*
+.testflow/plans/*
+.testflow/index/*
+.testflow/evidence/*
+.testflow/healing/*
+
+# Keep runtime directory structure
+!.testflow/recordings/.gitkeep
+!.testflow/models/.gitkeep
+!.testflow/plans/.gitkeep
+!.testflow/index/.gitkeep
+!.testflow/evidence/.gitkeep
+!.testflow/healing/.gitkeep
