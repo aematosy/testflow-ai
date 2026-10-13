@@ -4,22 +4,22 @@ export class AddEmployeeLocators {
   constructor(private readonly page: Page) {}
 
   get heading() {
-    return this.page.getByRole('heading', { name: 'Add Employee' });
+    return this.page.locator("xpath=//h6[normalize-space(.)='Add Employee']");
   }
 
   get firstName() {
-    return this.page.getByPlaceholder('First Name');
+    return this.page.locator("input[name=\"firstName\"]");
   }
 
   get lastName() {
-    return this.page.getByPlaceholder('Last Name');
+    return this.page.locator("input[name=\"lastName\"]");
   }
 
   get employeeId() {
-    return this.page.getByLabel('Employee Id');
+    return this.page.locator("xpath=//label[normalize-space(.)='Employee Id']/parent::*/following-sibling::*//input");
   }
 
   get saveButton() {
-    return this.page.getByRole('button', { name: 'Save' });
+    return this.page.locator("xpath=//button[normalize-space(.)='Save']");
   }
 }

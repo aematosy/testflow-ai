@@ -26,3 +26,5 @@ blob-report/
 !.testflow/index/.gitkeep
 !.testflow/evidence/.gitkeep
 !.testflow/healing/.gitkeep
+config/environments/*.env
+!config/environments/*.env.example

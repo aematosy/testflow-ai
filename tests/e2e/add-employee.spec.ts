@@ -1,27 +1,54 @@
-import { test } from '@playwright/test';
-import { AddEmployeeFlow, type AddEmployeeFlowData } from '../../src/flows/add-employee.flow';
+import {
+  test,
+} from '@playwright/test';
 
-function requiredEnvironmentValue(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value;
-}
+import {
+  AddEmployeeFlow,
+  type AddEmployeeFlowData,
+} from '../../src/flows/add-employee.flow';
 
-const scenario: AddEmployeeFlowData = {
-  credentials: {
-    username: requiredEnvironmentValue('ORANGEHRM_USERNAME'),
-    password: requiredEnvironmentValue('ORANGEHRM_PASSWORD'),
-  },
-  employee: {
-    firstName: requiredEnvironmentValue('EMPLOYEE_FIRST_NAME'),
-    lastName: requiredEnvironmentValue('EMPLOYEE_LAST_NAME'),
-    employeeId: requiredEnvironmentValue('EMPLOYEE_ID'),
-  },
+import {
+  requiredEnvironmentValue,
+} from '../../tools/testflow/config/environment';
+
+import {
+  addEmployeeCases,
+} from '../../test-data/add-employee.data';
+
+const credentials = {
+  username:
+    requiredEnvironmentValue(
+      'TEST_USERNAME',
+    ),
+
+  password:
+    requiredEnvironmentValue(
+      'TEST_PASSWORD',
+    ),
 };
 
-test('adds an employee', async ({ page }) => {
-  const addEmployeeFlow = new AddEmployeeFlow(page);
-  await addEmployeeFlow.addEmployee(scenario);
-});
+for (
+  const scenario of
+  addEmployeeCases
+) {
+  test(
+    `Add employee | ${scenario.name}`,
+    async ({ page }) => {
+      const flow =
+        new AddEmployeeFlow(
+          page,
+        );
+
+      const data:
+        AddEmployeeFlowData = {
+          credentials,
+          employee:
+            scenario.employee,
+        };
+
+      await flow.addEmployee(
+        data,
+      );
+    },
+  );
+}

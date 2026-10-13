@@ -13,6 +13,7 @@ import { runIndex } from './commands/index.command';
 import { runPlan } from './commands/plan.command';
 import { runPlanAgent } from './commands/plan-agent.command';
 import { runPreparePlan } from './commands/prepare-plan.command';
+import { runTest } from './commands/test.command';
 import { runValidate } from './commands/validate.command';
 import { runValidatePlan } from './commands/validate-plan.command';
 import { printHelp } from './help';
@@ -127,6 +128,14 @@ async function main(): Promise<void> {
     process.exitCode = runPreparePlan(
       process.argv[3],
     );
+    return;
+  }
+
+  if (command === 'test') {
+    process.exitCode =
+      runTest(
+        process.argv.slice(3),
+      );
     return;
   }
 

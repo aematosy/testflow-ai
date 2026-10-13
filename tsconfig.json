@@ -18,6 +18,7 @@
     "tests/**/*.ts",
     "tools/**/*.ts",
     "playwright.config.ts",
-    "testflow.config.ts"
+    "testflow.config.ts",
+    "test-data/**/*.ts"
   ]
 }
