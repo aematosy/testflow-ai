@@ -17,7 +17,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "testflow": "tsx tools/testflow/cli/index.ts",
     "typecheck": "tsc --noEmit",
-    "test:smoke": "playwright test tests/smoke/framework.spec.ts"
+    "test:smoke": "playwright test tests/smoke/framework.spec.ts",
+    "test:unit": "playwright test tests/unit",
+    "test:quality": "npm run typecheck && npm run test:unit && npm run test:smoke"
   },
   "keywords": [],
   "author": "",

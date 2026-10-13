@@ -10,6 +10,7 @@ import { runIndex } from './commands/index.command';
 import { runPlan } from './commands/plan.command';
 import { runPreparePlan } from './commands/prepare-plan.command';
 import { runValidate } from './commands/validate.command';
+import { runValidatePlan } from './commands/validate-plan.command';
 import { printHelp } from './help';
 
 function getVersion(): string {
@@ -90,6 +91,13 @@ function main(): void {
 
   if (command === 'prepare-plan') {
     process.exitCode = runPreparePlan(
+      process.argv[3],
+    );
+    return;
+  }
+
+  if (command === 'validate-plan') {
+    process.exitCode = runValidatePlan(
       process.argv[3],
     );
     return;
