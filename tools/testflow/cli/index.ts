@@ -5,6 +5,7 @@ import path from 'node:path';
 
 import { runApprove } from './commands/approve.command';
 import { runDoctor } from './commands/doctor.command';
+import { runGeneratePreview } from './commands/generate-preview.command';
 import { runImport } from './commands/import.command';
 import { runInspect } from './commands/inspect.command';
 import { runIndex } from './commands/index.command';
@@ -101,6 +102,14 @@ async function main(): Promise<void> {
   if (command === 'plan-agent') {
     process.exitCode = await runPlanAgent(
       process.argv[3],
+    );
+    return;
+  }
+
+  if (command === 'generate-preview') {
+    process.exitCode = await runGeneratePreview(
+      process.argv[3],
+      process.argv[4],
     );
     return;
   }

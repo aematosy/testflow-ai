@@ -16,7 +16,8 @@ Commands:
   plan-agent   Create an AI architecture proposal
   validate-plan Validate an architecture proposal
   approve      Approve and freeze a validated proposal
-  generate     Generate approved implementation
+  generate-preview Generate candidate in isolated sandbox
+  generate     Apply an approved generated implementation
   review       Run architecture and quality review
   test         Execute Playwright tests
   analyze      Analyze execution failures
