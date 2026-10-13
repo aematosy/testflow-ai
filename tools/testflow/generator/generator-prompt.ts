@@ -64,6 +64,11 @@ Rules:
 - no passwords or secrets
 - use runtime/environment credentials for sensitive data
 - use Recorder Playwright semantic locator evidence
+- Recorder locator evidence is a candidate, not verified browser truth
+- do not use exact: true for accessible-name locators unless the target
+  contains explicit browser-verification evidence proving an exact match
+- prefer resilient Playwright role/name, label, placeholder, test-id,
+  or stable semantic attribute locators
 - preserve existing code for MODIFY
 - implement complete compilable TypeScript files
 - use @playwright/test
