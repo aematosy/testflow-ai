@@ -239,12 +239,122 @@ export function validateGeneratedPatch(
     });
   }
 
+  /*
+   * Validate completeness of the approved plan.
+   *
+   * Safety is not only about preventing unauthorized
+   * changes. Every approved CREATE and MODIFY must
+   * actually be implemented.
+   */
+  const detectedChanges =
+    new Map(
+      changes.map(
+        (change) => [
+          change.path,
+          change.operation,
+        ],
+      ),
+    );
+
   for (
     const [
       artifactPath,
       change,
     ] of authorized
   ) {
+    const sandboxFile =
+      path.join(
+        sandboxRoot,
+        artifactPath,
+      );
+
+    const repositoryFile =
+      path.join(
+        repositoryRoot,
+        artifactPath,
+      );
+
+    if (
+      change === 'CREATE'
+    ) {
+      if (
+        !fs.existsSync(
+          sandboxFile,
+        )
+      ) {
+        errors.push(
+          `Approved CREATE was not generated: ${artifactPath}`,
+        );
+
+        continue;
+      }
+
+      if (
+        detectedChanges.get(
+          artifactPath,
+        ) !== 'CREATE'
+      ) {
+        errors.push(
+          `Approved CREATE was not detected as a created artifact: ${artifactPath}`,
+        );
+      }
+
+      continue;
+    }
+
+    if (
+      change === 'MODIFY'
+    ) {
+      if (
+        !fs.existsSync(
+          sandboxFile,
+        )
+      ) {
+        errors.push(
+          `Approved MODIFY target is missing from sandbox: ${artifactPath}`,
+        );
+
+        continue;
+      }
+
+      if (
+        !fs.existsSync(
+          repositoryFile,
+        )
+      ) {
+        errors.push(
+          `Approved MODIFY target does not exist in repository: ${artifactPath}`,
+        );
+
+        continue;
+      }
+
+      if (
+        sameFile(
+          repositoryFile,
+          sandboxFile,
+        )
+      ) {
+        errors.push(
+          `Approved MODIFY was not implemented: ${artifactPath}`,
+        );
+
+        continue;
+      }
+
+      if (
+        detectedChanges.get(
+          artifactPath,
+        ) !== 'MODIFY'
+      ) {
+        errors.push(
+          `Approved MODIFY was not detected as a modified artifact: ${artifactPath}`,
+        );
+      }
+
+      continue;
+    }
+
     if (
       change === 'REUSE'
     ) {

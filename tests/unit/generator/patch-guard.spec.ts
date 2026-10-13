@@ -278,3 +278,155 @@ test(
     ).toBe(true);
   },
 );
+
+test(
+  'blocks when approved CREATE was not generated',
+  () => {
+    const repo =
+      fs.mkdtempSync(
+        path.join(
+          os.tmpdir(),
+          'tf-repo-',
+        ),
+      );
+
+    const sandbox =
+      fs.mkdtempSync(
+        path.join(
+          os.tmpdir(),
+          'tf-sandbox-',
+        ),
+      );
+
+    const result =
+      validateGeneratedPatch(
+        plan([
+          {
+            change:
+              'CREATE',
+            type:
+              'locator',
+            name:
+              'LoginLocators',
+            path:
+              'src/locators/login.locators.ts',
+            owns: [
+              'LOGIN',
+            ],
+            reason:
+              'Required creation.',
+            confidence:
+              1,
+          },
+        ]),
+        repo,
+        sandbox,
+      );
+
+    expect(
+      result.valid,
+    ).toBe(false);
+
+    expect(
+      result.errors,
+    ).toContain(
+      'Approved CREATE was not generated: src/locators/login.locators.ts',
+    );
+  },
+);
+
+test(
+  'blocks when approved MODIFY was not implemented',
+  () => {
+    const repo =
+      fs.mkdtempSync(
+        path.join(
+          os.tmpdir(),
+          'tf-repo-',
+        ),
+      );
+
+    const sandbox =
+      fs.mkdtempSync(
+        path.join(
+          os.tmpdir(),
+          'tf-sandbox-',
+        ),
+      );
+
+    const relative =
+      'src/locators/home.locators.ts';
+
+    for (
+      const root of [
+        repo,
+        sandbox,
+      ]
+    ) {
+      fs.mkdirSync(
+        path.join(
+          root,
+          'src/locators',
+        ),
+        {
+          recursive: true,
+        },
+      );
+
+      fs.writeFileSync(
+        path.join(
+          root,
+          relative,
+        ),
+        `
+export class HomeLocators {
+  profile() {}
+}
+`,
+      );
+    }
+
+    const result =
+      validateGeneratedPatch(
+        plan([
+          {
+            change:
+              'MODIFY',
+            type:
+              'locator',
+            name:
+              'HomeLocators',
+            path:
+              relative,
+            owns: [
+              'REPORTS',
+            ],
+            additions: {
+              targets: [
+                'REPORTS',
+              ],
+              methods: [
+                'reports',
+              ],
+            },
+            reason:
+              'Extend existing owner.',
+            confidence:
+              1,
+          },
+        ]),
+        repo,
+        sandbox,
+      );
+
+    expect(
+      result.valid,
+    ).toBe(false);
+
+    expect(
+      result.errors,
+    ).toContain(
+      'Approved MODIFY was not implemented: src/locators/home.locators.ts',
+    );
+  },
+);
