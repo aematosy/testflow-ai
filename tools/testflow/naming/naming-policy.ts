@@ -8,28 +8,49 @@ function words(
   value: string,
 ): string[] {
   return value
+    /*
+     * XMLParser -> XML Parser
+     * PIMEmployee -> PIM Employee
+     */
+    .replace(
+      /([A-Z]+)([A-Z][a-z])/g,
+      '$1 $2',
+    )
+
+    /*
+     * employeeList -> employee List
+     */
     .replace(
       /([a-z0-9])([A-Z])/g,
       '$1 $2',
     )
+
     .replace(
       /[^a-zA-Z0-9]+/g,
       ' ',
     )
+
     .trim()
+
     .split(/\s+/)
+
     .filter(Boolean);
+}
+
+function pascalWord(
+  word: string,
+): string {
+  return (
+    word.charAt(0).toUpperCase() +
+    word.slice(1).toLowerCase()
+  );
 }
 
 export function toPascalCase(
   value: string,
 ): string {
   return words(value)
-    .map(
-      (word) =>
-        word.charAt(0).toUpperCase() +
-        word.slice(1).toLowerCase(),
-    )
+    .map(pascalWord)
     .join('');
 }
 
@@ -56,12 +77,16 @@ function stripKnownSuffix(
     > = {
       locator:
         /Locators?$/i,
+
       page:
         /Page$/i,
+
       component:
         /Component$/i,
+
       flow:
         /Flow$/i,
+
       test:
         /(Test|Spec)$/i,
     };
@@ -81,22 +106,28 @@ export function canonicalArtifactName(
   artifact:
     ArchitectureProposalArtifact,
 ): CanonicalArtifactName {
+  const rawBase =
+    stripKnownSuffix(
+      artifact.name,
+      artifact.type,
+    );
+
   const base =
     toPascalCase(
-      stripKnownSuffix(
-        artifact.name,
-        artifact.type,
-      ),
+      rawBase,
     );
 
   const fileBase =
-    toKebabCase(base);
+    toKebabCase(
+      rawBase,
+    );
 
   switch (artifact.type) {
     case 'locator':
       return {
         name:
           `${base}Locators`,
+
         path:
           path.posix.join(
             'src/locators',
@@ -108,6 +139,7 @@ export function canonicalArtifactName(
       return {
         name:
           `${base}Page`,
+
         path:
           path.posix.join(
             'src/pages',
@@ -119,6 +151,7 @@ export function canonicalArtifactName(
       return {
         name:
           `${base}Component`,
+
         path:
           path.posix.join(
             'src/components',
@@ -130,6 +163,7 @@ export function canonicalArtifactName(
       return {
         name:
           `${base}Flow`,
+
         path:
           path.posix.join(
             'src/flows',
@@ -141,6 +175,7 @@ export function canonicalArtifactName(
       return {
         name:
           `${base}Test`,
+
         path:
           path.posix.join(
             'tests/e2e',

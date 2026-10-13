@@ -71,3 +71,51 @@ test(
     });
   },
 );
+
+test(
+  'splits acronym followed by PascalCase word',
+  () => {
+    expect(
+      canonicalArtifactName({
+        change: 'CREATE',
+        type: 'locator',
+        name:
+          'PIMEmployeeListLocators',
+        path: 'ignored',
+        owns: [],
+        reason: 'test',
+        confidence: 1,
+      }),
+    ).toEqual({
+      name:
+        'PimEmployeeListLocators',
+
+      path:
+        'src/locators/pim-employee-list.locators.ts',
+    });
+  },
+);
+
+test(
+  'normalizes acronym page naming',
+  () => {
+    expect(
+      canonicalArtifactName({
+        change: 'CREATE',
+        type: 'page',
+        name:
+          'PIMEmployeeListPage',
+        path: 'ignored',
+        owns: [],
+        reason: 'test',
+        confidence: 1,
+      }),
+    ).toEqual({
+      name:
+        'PimEmployeeListPage',
+
+      path:
+        'src/pages/pim-employee-list.page.ts',
+    });
+  },
+);
