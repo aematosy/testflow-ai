@@ -55,6 +55,10 @@ test(
             version: '1.0',
             recordingId:
               'TF-TEST',
+            repositoryIndexVersion:
+              '1.0',
+            generatedBy:
+              'planner-agent',
             forbiddenOperations: [],
           }),
         ),

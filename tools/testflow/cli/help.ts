@@ -12,7 +12,10 @@ Commands:
   inspect      Inspect a recording
   index        Index the existing automation repository
   design       Create functional test design
-  plan         Create an implementation plan
+  plan         Create a deterministic implementation plan
+  plan-agent   Create an AI architecture proposal
+  validate-plan Validate an architecture proposal
+  approve      Approve and freeze a validated proposal
   generate     Generate approved implementation
   review       Run architecture and quality review
   test         Execute Playwright tests

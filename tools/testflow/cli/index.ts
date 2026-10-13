@@ -3,11 +3,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { runApprove } from './commands/approve.command';
 import { runDoctor } from './commands/doctor.command';
 import { runImport } from './commands/import.command';
 import { runInspect } from './commands/inspect.command';
 import { runIndex } from './commands/index.command';
 import { runPlan } from './commands/plan.command';
+import { runPlanAgent } from './commands/plan-agent.command';
 import { runPreparePlan } from './commands/prepare-plan.command';
 import { runValidate } from './commands/validate.command';
 import { runValidatePlan } from './commands/validate-plan.command';
@@ -31,7 +33,7 @@ function getVersion(): string {
   return packageJson.version ?? '0.0.0';
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const [, , command] = process.argv;
 
   if (
@@ -53,6 +55,13 @@ function main(): void {
 
   if (command === 'doctor') {
     process.exitCode = runDoctor();
+    return;
+  }
+
+  if (command === 'approve') {
+    process.exitCode = runApprove(
+      process.argv[3],
+    );
     return;
   }
 
@@ -89,6 +98,13 @@ function main(): void {
     return;
   }
 
+  if (command === 'plan-agent') {
+    process.exitCode = await runPlanAgent(
+      process.argv[3],
+    );
+    return;
+  }
+
   if (command === 'prepare-plan') {
     process.exitCode = runPreparePlan(
       process.argv[3],
@@ -111,4 +127,15 @@ function main(): void {
   process.exitCode = 1;
 }
 
-main();
+main().catch((error: unknown) => {
+  const message =
+    error instanceof Error
+      ? error.message
+      : String(error);
+
+  console.error(
+    `\nTestFlow CLI failed: ${message}\n`,
+  );
+
+  process.exitCode = 1;
+});

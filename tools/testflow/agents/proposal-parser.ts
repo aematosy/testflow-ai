@@ -15,13 +15,30 @@ function isObject(
   );
 }
 
+function requiredString(
+  object: JsonObject,
+  property: string,
+): void {
+  if (
+    typeof object[property] !== 'string' ||
+    String(
+      object[property],
+    ).trim().length === 0
+  ) {
+    throw new Error(
+      `Planner proposal requires ${property}.`,
+    );
+  }
+}
+
 export function parseArchitectureProposal(
   raw: string,
 ): ArchitectureProposal {
   let value: unknown;
 
   try {
-    value = JSON.parse(raw);
+    value =
+      JSON.parse(raw);
   } catch {
     throw new Error(
       'Planner output is not valid JSON.',
@@ -34,18 +51,32 @@ export function parseArchitectureProposal(
     );
   }
 
-  if (value.version !== '1.0') {
+  if (
+    value.version !== '1.0'
+  ) {
     throw new Error(
       'Planner proposal version must be 1.0.',
     );
   }
 
+  requiredString(
+    value,
+    'recordingId',
+  );
+
+  requiredString(
+    value,
+    'repositoryIndexVersion',
+  );
+
   if (
-    typeof value.recordingId !==
-    'string'
+    value.generatedBy !==
+    'planner-agent' &&
+    value.generatedBy !==
+    'manual'
   ) {
     throw new Error(
-      'Planner proposal requires recordingId.',
+      'Planner proposal generatedBy is invalid.',
     );
   }
 
