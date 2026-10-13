@@ -102,6 +102,33 @@ Flows represent functional orchestration, not route count.
 
 Locators must remain separate from Pages and Components.
 
+LOCATOR OWNERSHIP CONTRACT:
+
+For every artifact whose type is "locator":
+
+- "owns" MUST contain ONLY exact target keys from
+  TESTFLOW CONTEXT recording.targets[].key.
+- Never put descriptions, labels, semantic names,
+  control types, or prose in locator owns.
+- Every target required by the recording MUST have
+  exactly one locator owner.
+- Do not invent target keys.
+
+Example:
+
+Correct:
+"owns": ["USERNAME", "PASSWORD", "LOGIN"]
+
+Forbidden:
+"owns": [
+  "Username textbox",
+  "Password field",
+  "Login button"
+]
+
+For non-locator artifacts, "owns" may describe
+functional responsibilities.
+
 Existing repository artifacts are protected.
 
 === ARCHITECTURE RULES ===

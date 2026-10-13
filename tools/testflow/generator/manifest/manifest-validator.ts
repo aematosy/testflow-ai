@@ -31,7 +31,8 @@ export function validateGenerationManifest(
       approved.proposal.artifacts
         .filter(
           (artifact) =>
-            artifact.change !== 'REUSE',
+            artifact.change !== 'REUSE' &&
+            artifact.type !== 'locator',
         )
         .map(
           (artifact) => [

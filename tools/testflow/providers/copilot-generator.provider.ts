@@ -10,6 +10,10 @@ import {
 } from '../generator/manifest/manifest-materializer';
 
 import {
+  materializeLocatorArtifacts,
+} from '../generator/locators/locator-artifact-compiler';
+
+import {
   parseGenerationManifest,
 } from '../generator/manifest/manifest-parser';
 
@@ -141,6 +145,12 @@ implements GeneratorProvider {
 
     materializeManifest(
       manifest,
+      request.sandboxRoot,
+    );
+
+    materializeLocatorArtifacts(
+      request.approvedPlan.proposal,
+      request.model,
       request.sandboxRoot,
     );
 

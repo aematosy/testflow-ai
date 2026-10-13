@@ -38,10 +38,15 @@ Required shape:
   ]
 }
 
-Generate exactly every CREATE and MODIFY artifact from the approved
-plan.
+Generate every approved CREATE and MODIFY artifact EXCEPT artifacts
+whose type is "locator".
 
+Locator artifacts are generated deterministically by TestFlow Core from
+the Recorder canonical targets.
+
+Do NOT return locator artifacts.
 Do NOT return REUSE artifacts.
+Do NOT invent or reinterpret selectors.
 
 Do NOT invent files.
 

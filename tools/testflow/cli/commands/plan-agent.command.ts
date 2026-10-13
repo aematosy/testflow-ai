@@ -22,6 +22,10 @@ import {
 } from '../../planner/planner-orchestrator';
 
 import {
+  validateLocatorOwnership,
+} from '../../planner/locator-ownership-validator';
+
+import {
   CopilotPlannerProvider,
 } from '../../providers/copilot-planner.provider';
 
@@ -181,6 +185,12 @@ export async function runPlanAgent(
         repository,
       );
 
+    const locatorOwnershipValidation =
+      validateLocatorOwnership(
+        normalizedProposal,
+        model,
+      );
+
     console.log(
       '\nARCHITECTURE PROPOSAL',
     );
@@ -237,8 +247,12 @@ export async function runPlanAgent(
       '\nVALIDATION',
     );
 
+    const totalErrors =
+      validation.errors.length +
+      locatorOwnershipValidation.errors.length;
+
     console.log(
-      `  Errors      ${validation.errors.length}`,
+      `  Errors      ${totalErrors}`,
     );
 
     console.log(
@@ -263,6 +277,15 @@ export async function runPlanAgent(
       );
     }
 
+    for (
+      const error of
+      locatorOwnershipValidation.errors
+    ) {
+      console.log(
+        `  ERROR: locator ownership: ${error}`,
+      );
+    }
+
     console.log(
       '\nProposal',
     );
@@ -279,7 +302,8 @@ export async function runPlanAgent(
     );
 
     if (
-      !validation.valid
+      !validation.valid ||
+      !locatorOwnershipValidation.valid
     ) {
       console.log(
         '\nBLOCKED: agent proposal failed deterministic validation.\n',
